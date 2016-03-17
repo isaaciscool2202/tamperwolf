@@ -1,6 +1,10 @@
 chrome.browserAction.onClicked.addListener(function (tab) {
-  alert('asdf');
-  chrome.browserAction.setBadgeText({ text: 'clicked'});
+  chrome.tabs.getSelected(null, function (tab) {
+    chrome.browserAction.setBadgeText({
+      text: 'clicked',
+      tabId: tab.id
+    });
+  });
 });
 
 chrome.browserAction.setBadgeText('clicked');
