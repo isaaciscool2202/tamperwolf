@@ -5,10 +5,60 @@
   <title>Tamperwolf Configuration</title>
   <script src="angular.min.js" charset="utf-8"></script>
   <script src="options.js" charset="utf-8"></script>
+  <style>
+    table {
+      width: 100%;
+    }
+
+    td, th {
+      text-align: left;
+    }
+
+    label {
+      display: inline-block;
+      font-weight: bold;
+      min-width: 355px;
+    }
+
+    div.errors {
+      color: red;
+    }
+  </style>
 </head>
 <body ng-controller="OptionsController">
-  abc
-  {{1 + 3}}
+  {{ rules.length }} rule(s) defined.
+  <button type="button" ng-click="addNewRule()">New Rule</button>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Pattern</th>
+      <th>Script URL</th>
+      <th> </th>
+    </tr>
+    <tr ng-repeat="r in rules">
+      <td>{{ r.name }}</td>
+      <td>{{ r.pattern }}</td>
+      <td>{{ r.scriptUrl }}</td>
+      <td>
+        <button type="button" ng-click="edit(r)">edit</button>
+        <button type="button" ng-click="delete(r)">delete</button>
+      </td>
+    </tr>
+  </table>
 
+
+  <form ng-show="editedItem">
+    <br />
+    <div> <label for="name">Name:</label> <input type="text" id="name" name="name" ng-model="editedItem.name" /> </div>
+    <div> <label for="pattern">Pattern:</label> <input type="text" id="pattern" name="pattern" ng-model="editedItem.pattern" /> </div>
+    <div> <label for="scriptUrl">ScriptUrl:</label> <input type="text" id="scriptUrl "name="scriptUrl" ng-model="editedItem.scriptUrl" /> </div>
+
+    <br />
+    <button type="button" name="button" ng-click="save()">Save</button>
+    <button type="button" name="button" ng-click="cancel()">Cancel</button>
+    <div class="errors">
+      {{ errors }}
+    </div>
+  </form>
 </body>
 </html>
