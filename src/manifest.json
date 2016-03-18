@@ -2,9 +2,9 @@
   "manifest_version": 2,
   "name": "Tamperwolf",
   "short_name": "Tamperwolf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Cristian Lupașcu",
-  "homepage_url": "https://github.com/wolfascu",
+  "homepage_url": "https://github.com/wolfascu/tamperwolf",
 
   "description": "Tampermonkey clone",
   "icons":{
