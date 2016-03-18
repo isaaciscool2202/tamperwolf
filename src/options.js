@@ -12,9 +12,11 @@ app.controller('OptionsController', ['$scope', function ($scope) {
 
   $scope.delete = function (rule) {
     var index = $scope.rules.indexOf(rule);
-    if (index) {
+    if (index > -1) {
       $scope.rules.splice(index, 1);
     }
+
+    saveData();
   };
 
   $scope.cancel = function () {
@@ -55,7 +57,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
 
     var errors = [];
 
-    if (!edited.name.match(/\w[\w ]+/)) {
+    if (!edited.name.match(/\w[\w ]*/)) {
       errors.push('No name specified!');
     }
 
@@ -63,7 +65,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
       errors.push('Invalid regex pattern!');
     }
 
-    if (!edited.scriptUrl.match(/\w[\w ]+/)) {
+    if (!edited.scriptUrl.match(/\w[\w ]*/)) {
       errors.push('No script url specified!');
     }
 
@@ -82,16 +84,23 @@ app.controller('OptionsController', ['$scope', function ($scope) {
   };
 
   var saveData = function () {
-    //todo...
-  }
+    var message = { action: 'saveAllRules', rules: $scope.rules };
+    chrome.runtime.sendMessage(message, function (response) {
+      $scope.savedAlert = true;
+      window.setTimeout(function () {
+        $scope.savedAlert = false;
+        $scope.$apply();
+      }, 1000);
+    });
+  };
 
   var init = function () {
     chrome.runtime.sendMessage({ action: 'getAllRules' }, function (response) {
-      $scope.rules = response;
+      console.log(response);
+      $scope.rules = response || [];
       $scope.$apply();
     });
   };
 
   init();
-
 }]);

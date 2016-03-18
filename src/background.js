@@ -14,6 +14,18 @@ var rules = [
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getAllRules') {
-    sendResponse(rules);
+    chrome.storage.sync.get('rules', function (results) {
+      sendResponse(results.rules);
+    });
+
+    return true;
+  }
+
+  if (request.action === 'saveAllRules') {
+    chrome.storage.sync.set({ rules: request.rules }, function () {
+      sendResponse({});
+    });
+
+    return true;
   }
 });

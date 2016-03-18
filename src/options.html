@@ -23,25 +23,35 @@
     div.errors {
       color: red;
     }
+
+    div.update-indicator {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      color: darkgreen;
+    }
   </style>
 </head>
 <body ng-controller="OptionsController">
+  <div class="update-indicator" ng-show="savedAlert">
+    Data was saved!
+  </div>
   {{ rules.length }} rule(s) defined.
-  <button type="button" ng-click="addNewRule()">New Rule</button>
+  <a href="#" ng-click="addNewRule()">new rule</a>
   <table>
     <tr>
       <th>Name</th>
       <th>Pattern</th>
       <th>Script URL</th>
-      <th> </th>
+      <th></th>
     </tr>
-    <tr ng-repeat="r in rules">
+    <tr ng-repeat="r in rules track by $index">
       <td>{{ r.name }}</td>
       <td>{{ r.pattern }}</td>
       <td>{{ r.scriptUrl }}</td>
       <td>
-        <button type="button" ng-click="edit(r)">edit</button>
-        <button type="button" ng-click="delete(r)">delete</button>
+        <a ng-click="edit(r)" href="#">edit</a>
+        <a ng-click="delete(r)" href="#">delete</a>
       </td>
     </tr>
   </table>
