@@ -1,21 +1,20 @@
-chrome.browserAction.onClicked.addListener(function (tab) {
-  chrome.tabs.getSelected(null, function (tab) {
-    chrome.browserAction.setBadgeText({
-      text: 'clicked',
-      tabId: tab.id,
-    });
-  });
-});
+var rules = [ ];
 
-var rules = [
-  { addedOn: 1, name: 'stacko', pattern: '/stackoverflow/', scriptUrl: 'asdf' },
-  { addedOn: 2, name: 'github', pattern: '/github/', scriptUrl: 'asdf' }
-];
+var loadRulesFromStorage = function (callback) {
+  chrome.storage.sync.get('rules', function (results) {
+    rules = results.rules || [];
+    if (callback) {
+      callback(results);
+    }
+  });
+};
+
+loadRulesFromStorage();
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getAllRules') {
-    chrome.storage.sync.get('rules', function (results) {
-      sendResponse(results.rules);
+    loadRulesFromStorage(function (results) {
+      sendResponse(results.rules || []);
     });
 
     return true;
@@ -23,8 +22,32 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   if (request.action === 'saveAllRules') {
     chrome.storage.sync.set({ rules: request.rules }, function () {
+      rules = request.rules;
       sendResponse({});
     });
+
+    return true;
+  }
+
+  if (request.action === 'getRulesForCurrentPage') {
+    var url = sender.tab.url;
+
+    var rulesToApply = rules.filter(function (r) {
+      try {
+        return sender.tab.url.match(new RegExp(r.pattern));
+      } catch (e) {
+        return false;
+      }
+    });
+
+    sendResponse(rulesToApply);
+
+    if (rulesToApply.length) {
+      chrome.browserAction.setBadgeText({
+        text: rulesToApply.length.toString(),
+        tabId: sender.tab.id
+      });
+    };
 
     return true;
   }

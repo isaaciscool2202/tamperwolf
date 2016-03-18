@@ -61,7 +61,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
       errors.push('No name specified!');
     }
 
-    if (!edited.pattern || !isValidRegex(edited.pattern)) {
+    if (!isValidRegex(edited.pattern)) {
       errors.push('Invalid regex pattern!');
     }
 
@@ -74,7 +74,15 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     }
   };
 
+  var isFilledIn = function (str) {
+    return str && str.match(/\w[\w ]*/);
+  };
+
   var isValidRegex = function (str) {
+    if (!str) {
+      return false;
+    }
+
     try {
       new RegExp(str);
       return true;
@@ -96,7 +104,6 @@ app.controller('OptionsController', ['$scope', function ($scope) {
 
   var init = function () {
     chrome.runtime.sendMessage({ action: 'getAllRules' }, function (response) {
-      console.log(response);
       $scope.rules = response || [];
       $scope.$apply();
     });
