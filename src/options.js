@@ -1,6 +1,7 @@
 var app = angular.module('tamperwolf', []);
 
 app.controller('OptionsController', ['$scope', function ($scope) {
+    $scope.editedItem = {};
   $scope.addNewRule = function () {
     $scope.editedItem = {};
   };

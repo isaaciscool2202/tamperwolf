@@ -1,47 +1,88 @@
 <!DOCTYPE html>
 <html ng-app="tamperwolf" lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Tamperwolf Configuration</title>
-  <script src="angular.min.js" charset="utf-8"></script>
-  <script src="options.js" charset="utf-8"></script>
-  <style>
-    body {
-      min-width: 550px;
-    }
+<meta charset="utf-8">
+<title>Tamperwolf Configuration</title>
+<script src="angular.min.js" charset="utf-8"></script>
+<script src="options.js" charset="utf-8"></script>
+<style>
+html, body {
+  min-width: 550px;
+  height: 100%;
+  overflow: hidden;
+}
 
-    table {
-      width: 100%;
-    }
+.container {
+  max-height: 70%;
+  overflow: auto;
+}
 
-    td, th {
-      text-align: left;
-    }
+table {
+  width: 100%;
+  border-spacing: 0;
+}
 
-    label {
-      display: inline-block;
-      font-weight: bold;
-      min-width: 355px;
-    }
+td, th {
+  text-align: left;
+}
 
-    div.errors {
-      color: red;
-    }
+th {
+  background-color: #444;
+  color: #eee;
+}
 
-    div.update-indicator {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      color: darkgreen;
-    }
-  </style>
+tr:nth-child(odd) {
+  background-color: #ddd;
+   }
+
+   tr:nth-child(even) {
+     background-color: #eee;
+      }
+
+      label {
+        display: inline-block;
+        font-weight: bold;
+        min-width: 355px;
+      }
+
+      div.errors {
+        color: red;
+      }
+
+      div.update-indicator {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: darkgreen;
+      }
+
+      .full-screen{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .form-overlay {
+        background-color: #000;
+        opacity: 0.4;
+      }
+
+      .form {
+        background-color: #ccc;
+        padding: 40% 10 10 0;
+      }
+</style>
 </head>
 <body ng-controller="OptionsController">
-  <div class="update-indicator" ng-show="savedAlert">
-    Data was saved!
-  </div>
-  {{ rules.length }} rule(s) defined.
-  <a href="#" ng-click="addNewRule()">new rule</a>
+<div class="update-indicator" ng-show="savedAlert">
+  Data was saved!
+</div>
+{{ rules.length }} rule(s) defined.
+<a href="#" ng-click="addNewRule()">new rule</a>
+Filter: <input type="text" ng-model="query">
+<div class="container">
   <table>
     <tr>
       <th>Name</th>
@@ -49,7 +90,7 @@
       <th>Script URL</th>
       <th></th>
     </tr>
-    <tr ng-repeat="r in rules track by $index">
+    <tr ng-repeat="r in rules | filter: query track by $index">
       <td>{{ r.name }}</td>
       <td>{{ r.pattern }}</td>
       <td>{{ r.scriptUrl }}</td>
@@ -59,14 +100,17 @@
       </td>
     </tr>
   </table>
+</div>
 
+<div ng-show="editedItem" class="form-overlay full-screen">
+</div>
 
-  <form ng-show="editedItem">
+<div ng-show="editedItem" class="full-screen">
+  <form ng-show="editedItem" class="form" >
     <br />
     <div> <label for="name">Name:</label> <input type="text" id="name" name="name" ng-model="editedItem.name" /> </div>
     <div> <label for="pattern">Pattern:</label> <input type="text" id="pattern" name="pattern" ng-model="editedItem.pattern" /> </div>
     <div> <label for="scriptUrl">ScriptUrl:</label> <input type="text" id="scriptUrl "name="scriptUrl" ng-model="editedItem.scriptUrl" /> </div>
-
     <br />
     <button type="button" name="button" ng-click="save()">Save</button>
     <button type="button" name="button" ng-click="cancel()">Cancel</button>
@@ -74,5 +118,6 @@
       {{ errors }}
     </div>
   </form>
+</div>
 </body>
 </html>
