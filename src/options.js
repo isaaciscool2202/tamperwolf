@@ -1,7 +1,6 @@
 var app = angular.module('tamperwolf', []);
 
 app.controller('OptionsController', ['$scope', function ($scope) {
-    $scope.editedItem = {};
   $scope.addNewRule = function () {
     $scope.editedItem = {};
   };
@@ -96,6 +95,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     var message = { action: 'saveAllRules', rules: $scope.rules };
     chrome.runtime.sendMessage(message, function (response) {
       $scope.savedAlert = true;
+      $scope.$apply();
       window.setTimeout(function () {
         $scope.savedAlert = false;
         $scope.$apply();

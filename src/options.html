@@ -12,67 +12,64 @@ html, body {
   overflow: hidden;
 }
 
-.container {
-  max-height: 70%;
-  overflow: auto;
-}
+  .container {
+    max-height: 70%;
+    overflow: auto;
+  }
 
-table {
-  width: 100%;
-  border-spacing: 0;
-}
+  table {
+    width: 100%;
+    border-spacing: 0;
+  }
 
-td, th {
-  text-align: left;
-}
+  td, th {
+    text-align: left;
+  }
 
-th {
-  background-color: #444;
-  color: #eee;
-}
+  th {
+    background-color: #444;
+    color: #eee;
+  }
 
-tr:nth-child(odd) {
-  background-color: #ddd;
-   }
+  tr:nth-child(odd) {
+    background-color: #ddd;
+  }
 
-   tr:nth-child(even) {
-     background-color: #eee;
-      }
+  tr:nth-child(even) {
+    background-color: #eee;
+  }
 
-      label {
-        display: inline-block;
-        font-weight: bold;
-        min-width: 355px;
-      }
+  label {
+    display: inline-block;
+    font-weight: bold;
+    min-width: 355px;
+  }
 
-      div.errors {
-        color: red;
-      }
+  div.errors {
+    color: red;
+  }
 
-      div.update-indicator {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        color: darkgreen;
-      }
+  div.update-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: darkgreen;
+  }
 
-      .full-screen{
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
+  .full-screen{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, .95);
+    padding: 10px;
+  }
 
-      .form-overlay {
-        background-color: #000;
-        opacity: 0.4;
-      }
+  form input {
+    width: 100%;
+  }
 
-      .form {
-        background-color: #ccc;
-        padding: 40% 10 10 0;
-      }
 </style>
 </head>
 <body ng-controller="OptionsController">
@@ -81,7 +78,12 @@ tr:nth-child(odd) {
 </div>
 {{ rules.length }} rule(s) defined.
 <a href="#" ng-click="addNewRule()">new rule</a>
+&nbsp; &nbsp; &nbsp; &nbsp;
 Filter: <input type="text" ng-model="query">
+
+<br />
+<br />
+
 <div class="container">
   <table>
     <tr>
@@ -102,11 +104,8 @@ Filter: <input type="text" ng-model="query">
   </table>
 </div>
 
-<div ng-show="editedItem" class="form-overlay full-screen">
-</div>
-
 <div ng-show="editedItem" class="full-screen">
-  <form ng-show="editedItem" class="form" >
+  <form>
     <br />
     <div> <label for="name">Name:</label> <input type="text" id="name" name="name" ng-model="editedItem.name" /> </div>
     <div> <label for="pattern">Pattern:</label> <input type="text" id="pattern" name="pattern" ng-model="editedItem.pattern" /> </div>
