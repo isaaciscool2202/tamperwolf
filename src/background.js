@@ -12,7 +12,7 @@ var loadRulesFromStorage = function (callback) {
 loadRulesFromStorage();
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === 'getAllRules') {
+  if (request.action === 'getOptions') {
     loadRulesFromStorage(function (results) {
       sendResponse(results.rules || []);
     });
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
 
-  if (request.action === 'saveAllRules') {
+  if (request.action === 'saveOptions') {
     chrome.storage.sync.set({ rules: request.rules }, function () {
       rules = request.rules;
       sendResponse({});

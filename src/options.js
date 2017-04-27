@@ -37,9 +37,10 @@ app.controller('OptionsController', ['$scope', function ($scope) {
       existing.pattern = $scope.editedItem.pattern;
       existing.scriptUrl = $scope.editedItem.scriptUrl;
     } else {
+      debugger;
       var newItem = $scope.editedItem;
       newItem.addedOn = Date.now();
-      $scope.rules.push(newItem);
+      $scope.options.rules.push(newItem);
     }
 
     saveData();
@@ -91,24 +92,78 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     }
   };
 
-  var saveData = function () {
-    var message = { action: 'saveAllRules', rules: $scope.rules };
-    chrome.runtime.sendMessage(message, function (response) {
-      $scope.savedAlert = true;
+  var showSavedAlert = function () {
+    $scope.savedAlert = true;
+    $scope.$apply();
+    window.setTimeout(function () {
+      $scope.savedAlert = false;
       $scope.$apply();
-      window.setTimeout(function () {
-        $scope.savedAlert = false;
-        $scope.$apply();
-      }, 1000);
+    }, 1000);
+  };
+
+
+  var saveData = function () {
+    var message = { action: 'saveOptions', rules: $scope.options };
+    chrome.runtime.sendMessage(message, showSavedAlert);
+  };
+
+  var load = function(cb) {
+    chrome.runtime.sendMessage({ action: 'getOptions' }, function(response) {
+      response = response || [];
+      if (response.constructor === Array) {
+        // convert from old format (array) to new (object)
+        response = { rules: response };
+      }
+      cb(response);
     });
   };
 
   var init = function () {
-    chrome.runtime.sendMessage({ action: 'getAllRules' }, function (response) {
-      $scope.rules = response || [];
+    load(function (response) {
+      $scope.options = response;
       $scope.$apply();
     });
   };
 
   init();
+
+
+  // $scope.editAsCode = true;
+  $scope.toggleCode = function() {
+    if ($scope.editAsCode){
+      $scope.codeError = '';
+      codeEditor.setValue('loading...');
+      load(function (response) {
+        codeEditor.setValue(JSON.stringify(response, null, 2));
+      });
+    }
+  };
+
+
+  var codeEditor;
+  var setupEditor = function() {
+    if (!ace) {
+      setTimeout(setupEditor, 100);
+      return;
+    }
+    var txt = document.getElementById('editor');
+    codeEditor = ace.edit(txt);
+    var session = codeEditor.getSession();
+    session.setMode('ace/mode/javascript');
+  };
+  setupEditor();
+
+  $scope.yes = 'no';
+  $scope.saveCode = function() {
+    try{
+      $scope.codeError = '';
+      var code = codeEditor.getValue();
+      var newOptions = JSON.parse(code);
+      $scope.options = newOptions;
+      var message = { action: 'saveOptions', rules: $scope.options };
+      chrome.runtime.sendMessage(message, showSavedAlert);
+    } catch (e) {
+      $scope.codeError = e.message;
+    }
+  };
 }]);
