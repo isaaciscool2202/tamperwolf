@@ -1,4 +1,4 @@
-var rules = [ ];
+var rules = [];
 
 var loadRulesFromStorage = function (callback) {
   chrome.storage.sync.get('rules', function (results) {
@@ -13,24 +13,22 @@ loadRulesFromStorage();
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getOptions') {
-    loadRulesFromStorage(function (results) {
-      sendResponse(results.rules || []);
-    });
-
+    loadRulesFromStorage(sendResponse);
     return true;
   }
 
   if (request.action === 'saveOptions') {
-    chrome.storage.sync.set({ rules: request.rules }, function () {
+    chrome.storage.sync.set(request.data, function () {
       rules = request.rules;
       sendResponse({});
     });
-
     return true;
   }
 
   if (request.action === 'getRulesForCurrentPage') {
     var url = sender.tab.url;
+
+    debugger;
 
     var rulesToApply = rules.filter(function (r) {
       try {

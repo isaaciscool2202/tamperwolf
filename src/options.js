@@ -103,12 +103,13 @@ app.controller('OptionsController', ['$scope', function ($scope) {
 
 
   var saveData = function () {
-    var message = { action: 'saveOptions', rules: $scope.options };
+    var message = { action: 'saveOptions', data: $scope.options };
     chrome.runtime.sendMessage(message, showSavedAlert);
   };
 
   var load = function(cb) {
     chrome.runtime.sendMessage({ action: 'getOptions' }, function(response) {
+      debugger;
       response = response || [];
       if (response.constructor === Array) {
         // convert from old format (array) to new (object)
@@ -160,7 +161,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
       var code = codeEditor.getValue();
       var newOptions = JSON.parse(code);
       $scope.options = newOptions;
-      var message = { action: 'saveOptions', rules: $scope.options };
+      var message = { action: 'saveOptions', data: $scope.options };
       chrome.runtime.sendMessage(message, showSavedAlert);
     } catch (e) {
       $scope.codeError = e.message;
