@@ -1,29 +1,33 @@
 var app = angular.module('tamperwolf', []);
 
-app.controller('OptionsController', ['$scope', function ($scope) {
-  $scope.addNewRule = function () {
+app.controller('OptionsController', ['$scope', ($scope) => {
+  $scope.addNewRule = () => {
     $scope.editedItem = {};
   };
 
-  $scope.edit = function (rule) {
+  $scope.edit = (rule) => {
     $scope.editedItem = JSON.parse(JSON.stringify(rule));
     $scope.editedItem.existingRecord = rule;
   };
 
-  $scope.delete = function (rule) {
-    var index = $scope.rules.indexOf(rule);
+  $scope.delete = (rule) => {
+    var index = $scope.options.rules.indexOf(rule);
     if (index > -1) {
-      $scope.rules.splice(index, 1);
+      $scope.options.rules.splice(index, 1);
     }
 
     saveData();
   };
 
-  $scope.cancel = function () {
+  $scope.cancel = () => {
     $scope.editedItem = null;
   };
 
-  $scope.save = function () {
+  $scope.toggle = (r) => {
+    saveData();
+  };
+
+  $scope.save = () =>  {
     validateEditedItem();
 
     if ($scope.errors) {
@@ -48,7 +52,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     $scope.editedItem = null;
   };
 
-  var validateEditedItem = function () {
+  var validateEditedItem = () =>  {
     $scope.errors = null;
 
     var edited = $scope.editedItem;
@@ -75,11 +79,11 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     }
   };
 
-  var isFilledIn = function (str) {
+  var isFilledIn = (str) => {
     return str && str.match(/\w[\w ]*/);
   };
 
-  var isValidRegex = function (str) {
+  var isValidRegex = (str) => {
     if (!str) {
       return false;
     }
@@ -92,25 +96,24 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     }
   };
 
-  var showSavedAlert = function () {
+  var showSavedAlert = () => {
     $scope.savedAlert = true;
     $scope.$apply();
-    window.setTimeout(function () {
+    window.setTimeout(() => {
       $scope.savedAlert = false;
       $scope.$apply();
     }, 1000);
   };
 
 
-  var saveData = function () {
+  var saveData = () => {
     var message = { action: 'saveOptions', data: $scope.options };
     chrome.runtime.sendMessage(message, showSavedAlert);
   };
 
-  var load = function(cb) {
-    chrome.runtime.sendMessage({ action: 'getOptions' }, function(response) {
-      debugger;
-      response = response || [];
+  var load = (cb) => {
+    chrome.runtime.sendMessage({ action: 'getOptions' }, (response) => {
+        response = Object.assign({ rules: [] }, response);
       if (response.constructor === Array) {
         // convert from old format (array) to new (object)
         response = { rules: response };
@@ -119,8 +122,8 @@ app.controller('OptionsController', ['$scope', function ($scope) {
     });
   };
 
-  var init = function () {
-    load(function (response) {
+  var init = () => {
+    load((response) => {
       $scope.options = response;
       $scope.$apply();
     });
@@ -130,11 +133,11 @@ app.controller('OptionsController', ['$scope', function ($scope) {
 
 
   // $scope.editAsCode = true;
-  $scope.toggleCode = function() {
+  $scope.toggleCode = () => {
     if ($scope.editAsCode){
       $scope.codeError = '';
       codeEditor.setValue('loading...');
-      load(function (response) {
+      load((response) => {
         codeEditor.setValue(JSON.stringify(response, null, 2));
       });
     }
@@ -142,7 +145,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
 
 
   var codeEditor;
-  var setupEditor = function() {
+  var setupEditor = () => {
     if (!ace) {
       setTimeout(setupEditor, 100);
       return;
@@ -155,7 +158,7 @@ app.controller('OptionsController', ['$scope', function ($scope) {
   setupEditor();
 
   $scope.yes = 'no';
-  $scope.saveCode = function() {
+  $scope.saveCode = () =>{
     try{
       $scope.codeError = '';
       var code = codeEditor.getValue();

@@ -106,12 +106,14 @@ html, body {
         <th>Name</th>
         <th>Pattern</th>
         <th>Script URL</th>
+        <th>Disabled?</th>
         <th></th>
       </tr>
       <tr ng-repeat="r in options.rules | filter: query track by $index">
         <td>{{ r.name }}</td>
         <td>{{ r.pattern }}</td>
         <td>{{ r.scriptUrl }}</td>
+        <td><input type="checkbox" ng-model="r.disabled" ng-click="toggle(r)" /></td>
         <td>
           <a ng-click="edit(r)" href="#">edit</a>
           <a ng-click="delete(r)" href="#">delete</a>
@@ -123,9 +125,10 @@ html, body {
   <div ng-show="editedItem" class="full-screen">
     <form>
       <br />
-      <div> <label for="name">Name:</label> <input type="text" id="name" name="name" ng-model="editedItem.name" /> </div>
-      <div> <label for="pattern">Pattern:</label> <input type="text" id="pattern" name="pattern" ng-model="editedItem.pattern" /> </div>
-      <div> <label for="scriptUrl">ScriptUrl:</label> <input type="text" id="scriptUrl "name="scriptUrl" ng-model="editedItem.scriptUrl" /> </div>
+      <div> <label for="name">Name:</label> <input type="text" placeholder="Sample rule (say hello on google.com)" id="name" name="name" ng-model="editedItem.name" /> </div>
+      <div> <label for="pattern">URL Pattern (JS regex):</label> <input type="text" placeholder="^https?\:\/\/google\.com\/.*" id="pattern" name="pattern" ng-model="editedItem.pattern" /> </div>
+      <div> <label for="scriptUrl">Script Code/Url:</label> <input type="text" placeholder="javascript:alert('hello from google.com');" id="scriptUrl "name="scriptUrl" ng-model="editedItem.scriptUrl" /> </div>
+      <small>In the box above, enter either a URL to a .js script, or "javascript:" followed by the actual code (just like in Chrome bookmarks)</small>
       <br />
       <button type="button" name="button" ng-click="save()">Save</button>
       <button type="button" name="button" ng-click="cancel()">Cancel</button>

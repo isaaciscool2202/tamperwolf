@@ -1,7 +1,7 @@
-var rules = [];
+let rules = [];
 
-var loadRulesFromStorage = function (callback) {
-  chrome.storage.sync.get('rules', function (results) {
+const loadRulesFromStorage = (callback) => {
+  chrome.storage.sync.get('rules', (results) => {
     rules = results.rules || [];
     if (callback) {
       callback(results);
@@ -11,15 +11,15 @@ var loadRulesFromStorage = function (callback) {
 
 loadRulesFromStorage();
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'getOptions') {
     loadRulesFromStorage(sendResponse);
     return true;
   }
 
   if (request.action === 'saveOptions') {
-    chrome.storage.sync.set(request.data, function () {
-      rules = request.rules;
+    chrome.storage.sync.set(request.data, () => {
+      rules = request.data.rules;
       sendResponse({});
     });
     return true;
@@ -28,11 +28,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getRulesForCurrentPage') {
     var url = sender.tab.url;
 
-    debugger;
-
-    var rulesToApply = rules.filter(function (r) {
+    var rulesToApply = rules.filter((r) => {
       try {
-        return sender.tab.url.match(new RegExp(r.pattern));
+        return !r.disabled && sender.tab.url.match(new RegExp(r.pattern));
       } catch (e) {
         return false;
       }
