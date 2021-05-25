@@ -26,8 +26,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'getRulesForCurrentPage') {
-    var url = sender.tab.url;
-
     var rulesToApply = rules.filter((r) => {
       try {
         return !r.disabled && sender.tab.url.match(new RegExp(r.pattern));
